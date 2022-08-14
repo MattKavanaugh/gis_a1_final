@@ -730,9 +730,6 @@ st_write(obj = da21_ham_gc_iso,
 # otp no longer needed - stop connection to otp router
 otp_stop(warn=FALSE)
 
-# set tmap mode back to plot
-tmap_mode("plot")
-
 # free unused memory
 fm
 
@@ -960,7 +957,7 @@ tmap_mode("plot")
 # Plot greater golden horseshoe
 ggh <- ggplot()+
   geom_sf(data=cd21_ggh, fill='#EAECEE',size=0.1) +
-  geom_sf(data=cd21_ham, col='black', fill='#F0B27A',size=0.6) +
+  geom_sf(data=cd21_ham, col='red', fill='#998781',lwd = 0.5) +
   blank()
 
 # Plot study area
@@ -971,14 +968,14 @@ study_area <- ggplot()+
   geom_sf(data=esa, col=NA, fill='#afd2ae') +
   geom_sf(data=water, col=NA, fill='#a8cfec') +
   geom_sf(data=parks, col=NA, fill='#729b6f') +
-  geom_sf(data=cd21_ham, col='black', fill=NA, size=0.6) +
+  geom_sf(data=cd21_ham, col='black', fill=NA, lwd = 0.1) +
   blank() +
-  annotation_north_arrow(location = "bl", which_north = "true",
+  annotation_north_arrow(location = "br", which_north = "true",
                          height = unit(1, "cm"),
                          width = unit(1, "cm"),
                          pad_y = unit(0.1, "in"),
                          style = north_arrow_fancy_orienteering)+
-  annotation_scale(location = "bl",height = unit(0.1, "cm"),pad_y=unit(0.6,'in'))
+  annotation_scale(location = "bl",height = unit(0.1, "cm"))
 
 # plot together
 studyarea_ggh <- ggdraw() +
@@ -988,12 +985,12 @@ studyarea_ggh
 
 # save plot
 ggsave(filename = "studyarea_ggh.png",
-       device = png,
        path = here::here("data/results/"),
        width = 5,
        height = 5,
+       dpi = 300,
        units = "in",
-       dpi = 300)
+       device = "png")
 
 # - - - - - - - - - - - - 
 
@@ -1001,7 +998,7 @@ ggsave(filename = "studyarea_ggh.png",
 
 # A - DAs - Plot Zones
 DAplot <- ggplot() + 
-  ggtitle("A) Load Dissemination Areas") +
+  ggtitle("1) Load Dissemination Areas") +
   theme(plot.title = element_text(size = 10, hjust = 0, vjust = -1)) +
   geom_sf(data = da21_ham, color = 'grey', fill = NA) +
   geom_sf(data = cd21_ham, color = 'black', fill = NA) +
@@ -1009,7 +1006,7 @@ DAplot <- ggplot() +
 
 # B - DA Centroids - Calculate Centroids
 DAGCplot <- ggplot() + 
-  ggtitle("B) Calculate Centroids") +
+  ggtitle("2) Calculate Centroids") +
   theme(plot.title = element_text(size = 10, hjust = 0, vjust = -1)) +
   geom_sf(data = da21_ham_gc, color = '#FFC20A') +
   geom_sf(data = da21_ham, color = 'grey', fill = NA) +
@@ -1018,34 +1015,28 @@ DAGCplot <- ggplot() +
 
 # C - GC Isochrones - Calculate 15min Isochrones from Centroids
 DAGCISOplot <- ggplot() + 
-  ggtitle("C) Query OTP for 15min Isochrones") +
+  ggtitle("3) Query OTP for 15min Isochrones") +
   theme(plot.title = element_text(size = 10, hjust = 0, vjust = -1)) +
   geom_sf(data = da21_ham_gc_iso, fill = '#FFC20A', color = '#FFC20A') +
-  geom_sf(data = da21_ham, color = 'grey', fill = NA) +
+  #geom_sf(data = da21_ham, color = 'grey', fill = NA) +
   geom_sf(data = cd21_ham, color = 'black', fill = NA) +
   blank()+
-  annotation_north_arrow(location = "bl", which_north = "true",
-                         height = unit(1, "cm"),
-                         width = unit(1, "cm"),
-                         pad_y = unit(0.1, "in"),
-                         style = north_arrow_fancy_orienteering)+
-  annotation_scale(location = "bl",height = unit(0.1, "cm"),pad_y=unit(0.6,'in')) 
+  annotation_scale(location = "bl",height = unit(0.1, "cm")) 
 
 # D - Community spaces - Intersect Isochrones by Community Spaces
 CSPACESplot <- ggplot() + 
-  ggtitle("D) Intersect Community spaces") +
+  ggtitle("4) Intersect Community Spaces") +
   theme(plot.title = element_text(size = 10, hjust = 0, vjust = -1)) +
   geom_sf(data = da21_ham_gc_iso, fill = '#FFC20A', color = '#FFC20A') +
-  geom_sf(data = da21_ham, color = 'grey', fill = NA) +
+  #geom_sf(data = da21_ham, color = 'grey', fill = NA) +
   geom_sf(data = cd21_ham, color = 'black', fill = NA) +
   geom_sf(data = cspaces, color = '#0C7BDC', shape=18, size=1) +
   blank()+
-  annotation_north_arrow(location = "bl", which_north = "true",
-                         height = unit(1, "cm"),
-                         width = unit(1, "cm"),
+  annotation_north_arrow(location = "br", which_north = "true",
+                         height = unit(0.8, "cm"),
+                         width = unit(0.8, "cm"),
                          pad_y = unit(0.1, "in"),
-                         style = north_arrow_fancy_orienteering)+
-  annotation_scale(location = "bl",height = unit(0.1, "cm"),pad_y=unit(0.6,'in'))
+                         style = north_arrow_fancy_orienteering)
 
 # plot together
 studyarea_method <- plot_grid(ncol = 2,
@@ -1057,7 +1048,7 @@ studyarea_method
 
 # save plot
 ggsave(filename = "studyarea_method.png",
-       device = png,
+       device = "png",
        path = here::here("data/results/"),
        width = 5,
        height = 5,
@@ -1069,20 +1060,20 @@ ggsave(filename = "studyarea_method.png",
 # Plot DA SSOS >1
 
 DA_SSOS_1plus <- ggplot() +
-  geom_sf(data = cd21_ham, color = 'black', fill = '#ABEBC6', size = 0.05) +
-  geom_sf(data = zeros, fill = '#EAECEE') +
+  geom_sf(data = cd21_ham, color = NA, fill = '#ABEBC6', size = 0.05) +
+  geom_sf(data = zeros, col = 'grey', fill = '#EAECEE', size = 0.05) +
   blank() +
-  annotation_north_arrow(location = "bl", which_north = "true",
+  annotation_north_arrow(location = "br", which_north = "true",
                          height = unit(1, "cm"),
                          width = unit(1, "cm"),
                          pad_y = unit(0.1, "in"),
                          style = north_arrow_fancy_orienteering)+
-  annotation_scale(location = "bl",height = unit(0.1, "cm"),pad_y=unit(0.6,'in')) 
+  annotation_scale(location = "bl",height = unit(0.1, "cm"))
 DA_SSOS_1plus
 
 # save plot
 ggsave(filename = "DA_SSOS_1plus.png",
-       device = png,
+       device = "png",
        path = here::here("data/results/"),
        width = 5,
        height = 5,
@@ -1096,14 +1087,14 @@ cspaces_reach <- tm_shape(da21_ham) +
   tm_fill("cspaces_15",
           style = "jenks",
           legend.hist = TRUE,
-          title = "Community Spaces within 15 min\n(Transit, Max 1000m Walk, AM Peak)") +
+          title = "Community Spaces within 15 min.\n(Transit, max. 1000m walk, AM Peak)") +
   tm_layout(frame = FALSE,
             legend.outside = TRUE,
             legend.outside.position = 'bottom',
             legend.stack = 'horizontal',
             legend.title.fontface = 'bold',
             legend.hist.width = 1,
-            legend.hist.height = 0.5) +
+            legend.hist.height = 0.6) +
   tm_borders(col = "grey40", lwd = 0.1) +
   tm_legend(title.size=0.9,
             text.size = 0.6,
@@ -1116,10 +1107,10 @@ cspaces_reach
 # save plot
 tmap_save(tm = cspaces_reach,
           filename = here::here("data/results/cspaces_reach.png"),
-          device = png,
-          height = 6,
           width = 5,
-          units = "in")
+          height = 6,
+          units = "in",
+          dpi = 300)
 
 # - - - - - - - - - - - -  
 
@@ -1142,10 +1133,10 @@ DA_SSOS_plot
 # save plot
 tmap_save(tm = DA_SSOS_plot,
           filename = here::here("data/results/DA_SSOS.png"),
-          device = png,
           height = 3.5,
           width = 3.5,
-          units = "in")
+          units = "in",
+          dpi = 300)
 
 # - - - - - - - - - - - -  
 
@@ -1166,10 +1157,10 @@ DA_SSOSw_plot
 # save plot
 tmap_save(tm = DA_SSOSw_plot,
           filename = here::here("data/results/DA_SSOSw.png"),
-          device = png,
           height = 3.5,
           width = 3.5,
-          units = "in")
+          units = "in",
+          dpi = 300)
 
 # - - - - - - - - - - - -   
 
@@ -1190,10 +1181,10 @@ DA_SSOSw_5y_chg_plot
 # save plot
 tmap_save(tm = DA_SSOSw_5y_chg_plot,
           filename = here::here("data/results/DA_SSOSw_5y_chg.png"),
-          device = png,
           height = 3.5,
           width = 3.5,
-          units = "in")
+          units = "in",
+          dpi = 300)
 
 # - - - - - - - - - - - - 
 
@@ -1214,10 +1205,10 @@ DA_SSOSw_10y_chg_plot
 # save plot
 tmap_save(tm = DA_SSOSw_10y_chg_plot,
           filename = here::here("data/results/DA_SSOSw_10y_chg.png"),
-          device = png,
           height = 3.5,
           width = 3.5,
-          units = "in")
+          units = "in",
+          dpi = 300)
 
 # free unused memory
 fm
