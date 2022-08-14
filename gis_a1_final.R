@@ -1000,26 +1000,26 @@ ggsave(filename = "studyarea_ggh.png",
 DAplot <- ggplot() + 
   ggtitle("1) Load Dissemination Areas") +
   theme(plot.title = element_text(size = 10, hjust = 0, vjust = -1)) +
-  geom_sf(data = da21_ham, color = 'grey', fill = NA) +
-  geom_sf(data = cd21_ham, color = 'black', fill = NA) +
+  geom_sf(data = da21_ham, color = 'grey', fill = NA, lwd = 0.3) +
+  geom_sf(data = cd21_ham, color = 'black', fill = NA, lwd = 0.2) +
   blank()
 
 # B - DA Centroids - Calculate Centroids
 DAGCplot <- ggplot() + 
   ggtitle("2) Calculate Centroids") +
   theme(plot.title = element_text(size = 10, hjust = 0, vjust = -1)) +
-  geom_sf(data = da21_ham_gc, color = '#FFC20A') +
-  geom_sf(data = da21_ham, color = 'grey', fill = NA) +
-  geom_sf(data = cd21_ham, color = 'black', fill = NA) +
+  geom_sf(data = da21_ham_gc, color = '#F8C471') +
+  geom_sf(data = da21_ham, color = 'grey', fill = NA, lwd = 0.3) +
+  geom_sf(data = cd21_ham, color = 'black', fill = NA, lwd = 0.2) +
   blank()
 
 # C - GC Isochrones - Calculate 15min Isochrones from Centroids
 DAGCISOplot <- ggplot() + 
   ggtitle("3) Query OTP for 15min Isochrones") +
   theme(plot.title = element_text(size = 10, hjust = 0, vjust = -1)) +
-  geom_sf(data = da21_ham_gc_iso, fill = '#FFC20A', color = '#FFC20A') +
-  #geom_sf(data = da21_ham, color = 'grey', fill = NA) +
-  geom_sf(data = cd21_ham, color = 'black', fill = NA) +
+  geom_sf(data = da21_ham_gc_iso, fill = '#F8C471', color = '#F8C471') +
+  #geom_sf(data = da21_ham, color = 'grey', fill = NA, lwd = 0.3) +
+  geom_sf(data = cd21_ham, color = 'black', fill = NA, lwd = 0.2) +
   blank()+
   annotation_scale(location = "bl",height = unit(0.1, "cm")) 
 
@@ -1027,10 +1027,10 @@ DAGCISOplot <- ggplot() +
 CSPACESplot <- ggplot() + 
   ggtitle("4) Intersect Community Spaces") +
   theme(plot.title = element_text(size = 10, hjust = 0, vjust = -1)) +
-  geom_sf(data = da21_ham_gc_iso, fill = '#FFC20A', color = '#FFC20A') +
-  #geom_sf(data = da21_ham, color = 'grey', fill = NA) +
-  geom_sf(data = cd21_ham, color = 'black', fill = NA) +
-  geom_sf(data = cspaces, color = '#0C7BDC', shape=18, size=1) +
+  geom_sf(data = da21_ham_gc_iso, fill = '#F8C471', color = '#F8C471') +
+  #geom_sf(data = da21_ham, color = 'grey', fill = NA, lwd = 0.3) +
+  geom_sf(data = cd21_ham, color = 'black', fill = NA, lwd = 0.2) +
+  geom_sf(data = cspaces, color = '#A04000', shape=18, size=1.2) +
   blank()+
   annotation_north_arrow(location = "br", which_north = "true",
                          height = unit(0.8, "cm"),
@@ -1060,8 +1060,8 @@ ggsave(filename = "studyarea_method.png",
 # Plot DA SSOS >1
 
 DA_SSOS_1plus <- ggplot() +
-  geom_sf(data = cd21_ham, color = NA, fill = '#ABEBC6', size = 0.05) +
-  geom_sf(data = zeros, col = 'grey', fill = '#EAECEE', size = 0.05) +
+  geom_sf(data = cd21_ham, color = NA, fill = '#F8C471', size = 0.05) +
+  geom_sf(data = zeros, col = 'black', fill = '#CDD1D4', lwd = 0.001) +
   blank() +
   annotation_north_arrow(location = "br", which_north = "true",
                          height = unit(1, "cm"),
@@ -1099,6 +1099,8 @@ cspaces_reach <- tm_shape(da21_ham) +
   tm_legend(title.size=0.9,
             text.size = 0.6,
             position = c("left", "bottom")) +
+  tm_shape(cd21_ham, color = 'black', fill = NA) +
+  tm_borders(col = "black", lwd = 0.1) +
   tm_compass(north = 0, type = 'arrow', show.labels =0, position = c('right','bottom')) + 
   tm_scale_bar(color.dark = "black",
                position = c("left", "bottom"))
