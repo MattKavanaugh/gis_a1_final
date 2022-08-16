@@ -1,3 +1,8 @@
+# APPROX. RUN SPEEDS  | SECTION
+          # 1 minute  | parts 1a, 1b, and 2 
+          # 4 minutes | parts 3a, 3b, 3c, and 3d
+          # 1 minute  | parts 4 and 5
+
 # Setup Environment --------------------------------------------------------------------
 
 # load packages
@@ -29,6 +34,7 @@ library(ggspatial)
 library(tmap)
 library(tmaptools)
 library(cowplot)
+library(leaflet)
 
 # set optional preferences
 
@@ -468,7 +474,7 @@ oe_match(hamilton, provider = "openstreetmap_fr")
 # we will go with the regional option as it is a smaller area
 
 # NOTE 10 - osm download
-# downloading OSM takes a few minutes as the file is 126.5 MB
+# downloading OSM can take quite a few minutes depending on the size of the extract
 
 # Download osm data for Hamilton
 oe_get("Hamilton", 
@@ -548,25 +554,23 @@ fm
 tmap_mode("view")
 
 # NOTE 12 - creating otp graphs
-# to increase speed, memory settings were increased to 10240 in this section
-# however, memory settings have been reset to default value in the script below
-# as a result, this script will take 30-45 minutes to run
+# memory settings have been reset to default value in the script below
+# however, there are options to increase memory settings to increase speed
 
 # NOTE 13 - querying otp for isochrones:
-# to increase speed, ncore settings were increased to 4 cores in this section
-# however, ncores settings have been reset to default value (1) in the script below
-# as a result, this script will take 30-45 minutes to run
+# ncores settings have been reset to default value (1) in the script below
+# however, there are options to increase ncore settings to increase speed
 
-# NOTE 14 - ncroes
-# never set ncores to more ncores than avaialble on your computer
+# NOTE 14 - ncores
+# never set ncores to more ncores than available on your computer
 # to check your ncores, hold ctrl + shift + esc to bring up task manager
 # click performance tab and number of cores should be indicated in the bottom right 
 
 # create the default OTP graph file
-# optional memory bump up - see NOTE 1
+# optional memory bump up - see NOTES 12 to 14
 log1 <- otp_build_graph(otp = path_otp, 
                         dir = path_data, 
-                        memory = 2048)        # 2048 is default, I ran at 10240
+                        memory = 2048)        #default
 
 # launch otp and load the default graph (the server)
 log2 <- otp_setup(otp = path_otp, 
@@ -589,10 +593,10 @@ qtm(def_test)
 otp_stop(warn=FALSE)
 
 # create a hamilton OTP graph file
-# optional memory bump up - see NOTE 1
+# optional memory bump up - see NOTES 12 to 14
 log1 <- otp_build_graph(otp = path_otp, 
                         dir = path_data, 
-                        memory = 2048,        # 2048 is default, I ran at 10240
+                        memory = 2048,        #default
                         router = "hamilton")
 
 # launch otp and load the hamilton graph (the server)
@@ -615,14 +619,14 @@ ham_test1 <- otp_plan(otpcon,
 qtm(ham_test1)
 
 # test by getting an isochrone for McMaster University
-# optional ncores bump up - see NOTE 2
+# optional ncores bump up - see NOTES 12 to 14
 ham_test2  <- otp_isochrone(otpcon = otpcon,
                             fromPlace = c(-79.917151, 43.258050),
                             mode = c("WALK", "TRANSIT"),
                             date_time = as.POSIXct(strptime("2022-08-03 09:00", "%Y-%m-%d %H:%M")),
                             maxWalkDistance = 1000,
                             cutoffSec = (c(5, 10, 15) * 60),
-                            ncores = 1)    # 1 is default, I ran at 4
+                            ncores = 1)    #default
 
 ham_test2$minutes = (ham_test2$time / 60)
 
@@ -676,7 +680,7 @@ da21_ham_gc_iso <- list()
 
 # get isochrone polygon for each DA centroid and store in da21_ham_reach list
 # cutoffsec is the max time in seconds for the isochrone (15 minutes for this analysis)
-# with 891 DAs, this function takes about 20 minutes to run using ncores = 4
+# optional ncores bump up - see NOTES 12 to 14
 for (i in 1:nrows){
   da21_ham_gc_iso[[i]] <- otp_isochrone(otpcon = otpcon,
                                         fromPlace = c(da21_ham_gc$lon[i], da21_ham_gc$lat[i]),
@@ -685,7 +689,7 @@ for (i in 1:nrows){
                                         date_time = as.POSIXct(strptime("2022-08-03 09:00", "%Y-%m-%d %H:%M")),
                                         maxWalkDistance = 1000,
                                         cutoffSec = (15 * 60),
-                                        ncores = 1)}    # 1 is default, I ran at 4
+                                        ncores = 1)}    #default
 
 # check
 head(da21_ham_gc_iso, 1)
@@ -1061,7 +1065,7 @@ ggsave(filename = "studyarea_method.png",
 
 DA_SSOS_1plus <- ggplot() +
   geom_sf(data = cd21_ham, color = NA, fill = '#F8C471', size = 0.05) +
-  geom_sf(data = zeros, col = 'black', fill = '#CDD1D4', lwd = 0.001) +
+  geom_sf(data = zeros, col = 'black', fill = 'white', lwd = 0.001) +
   blank() +
   annotation_north_arrow(location = "br", which_north = "true",
                          height = unit(1, "cm"),
@@ -1214,3 +1218,6 @@ tmap_save(tm = DA_SSOSw_10y_chg_plot,
 
 # free unused memory
 fm
+
+# completion time stamp
+print(paste0("the script finished exceuting at ", Sys.time()))
