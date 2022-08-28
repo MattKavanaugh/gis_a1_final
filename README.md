@@ -8,7 +8,7 @@ This analysis aims to provide a simple example of how OpenTripPlanner can be use
 
 ---
 
-This script is organized into the following five parts:
+The script "gis_a1_final.R" is organized into the following five parts:
 
 -   PART 1 - Setup Environment
 -   PART 2 - Load and Prepare Data
